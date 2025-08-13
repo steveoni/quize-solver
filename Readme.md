@@ -15,11 +15,11 @@ Solve quizes via llm api. How?
 
 The app try as much to be un-detectable via
 
-- Entity proxy: the app is names differently entirely
+- Entity proxy: the app is named differently
 - Uses shadowDom
 - Api request to llm via background
 
-Note that this not ensure that the app is 100% or even close 90% un-detectable. Be careful out there.
+Note that this does not ensure that the app is 100% or even close 90% un-detectable. Be careful out there.
 
 ### Acknowledgement
 
