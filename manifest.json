@@ -1,9 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "OCR + LLM Quiz Solver",
+  "name": "Study Notes Helper",
   "version": "1.0",
-  "description": "Capture screen, OCR text, send to any LLM endpoint, and display answers.",
-  "permissions": ["activeTab", "tabs", "storage"],
+  "description": "Assists with note-taking and information organization",
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": [
+    "https://www.tests.com/*",
+    "https://developers.turing.com/*",
+    "<all_urls>"
+  ],
   "background": {
     "service_worker": "background.js"
   },
@@ -13,17 +18,26 @@
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self';"
   },
-  "host_permissions": ["<all_urls>"],
   "content_scripts": [
     {
-      "matches": ["<all_urls>"],
-      "js": ["scripts/tesseract.min.js", "scripts/content.js"]
+      "matches": [
+        "https://www.tests.com/*",
+        "https://developers.turing.com/*",
+        "https://vetting-engine.turing.com/*"
+      ],
+      "js": ["scripts/tesseract.min.js", "scripts/content.js"],
+      "world": "ISOLATED",
+      "run_at": "document_idle"
     }
   ],
   "web_accessible_resources": [
     {
-      "resources": ["scripts/*", "scripts/languages/*", "images/*"],
-      "matches": ["<all_urls>"]
+      "resources": ["scripts/*", "scripts/languages/*"],
+      "matches": [
+        "https://www.tests.com/*",
+        "https://developers.turing.com/*",
+        "https://vetting-engine.turing.com/*"
+      ]
     }
   ]
 }
