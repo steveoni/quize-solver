@@ -1,4 +1,4 @@
-## Quiz solver
+## Quize solver
 
 ![demo](./image/img.png)
 
