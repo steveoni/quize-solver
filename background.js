@@ -19,7 +19,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       const text = request.text;
       const SYSTEM_PROMPT = `You are a tech expert, knowledgeable accross a wide range of topics including programming, software development. i want you to look at the text. identify if it is a question and answer (with options) if so
         provide the answer and only the answer (e.g A, B, C or D) and nothing else. and if the quize is to output code, output only the code  only.
-        your mission is to identify what the text is asking and provide the answer or code if it is a code question. AND IF YOU ARE NOT SURE ABOUT THE ANSWER, USE THE GOOGLE SEARCH TOOL TO FIND THE MOST ACCURATE ANSWER.`;
+        your mission is to identify what the text is asking and provide the answer or code if it is a code question. AND IF YOU ARE NOT SURE ABOUT THE ANSWER, USE THE GOOGLE SEARCH TOOL TO FIND THE MOST ACCURATE ANSWER`;
 
       const requestData = {
         contents: [
@@ -76,8 +76,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 - If the quiz has options, pick the most correct one (e.g A, B, C, or D).
 - If the quiz requires code, output only the correct working code.
 - If the text is not properly captured, use your best judgment to infer the question and answer.
-- And if you are not sure about the answer, use the google search tool to find the most accurate answer.
-Respond with only the answer (e.g A, B, C, or D) or the code, nothing else.`;
+- And if you are not sure about the answer orn your confidence is very low, use the google search tool to find the most accurate; Respond with only the answer (e.g A, B, C, or D) or the code, nothing else.`;
 
       const requestData = {
         contents: [
