@@ -112,8 +112,67 @@
   }
 
   function captureAndProcess() {
-    chrome.runtime.sendMessage({ action: "captureTab" }, (response) => {
-      if (response?.dataUrl) processImage(response.dataUrl);
+    chrome.storage.sync.get(["sendImage"], (settings) => {
+      chrome.runtime.sendMessage({ action: "captureTab" }, (response) => {
+        if (response?.dataUrl) {
+          if (settings.sendImage) {
+            processImageWithGemini(response.dataUrl);
+          } else {
+            processImage(response.dataUrl);
+          }
+        }
+      });
+    });
+  }
+
+  async function processImageWithGemini(dataUrl) {
+    const outputElement = shadowRoot.getElementById(CONSTANTS.outputElementID);
+    outputElement.style.display = "block";
+    outputElement.innerHTML =
+      '<div style="padding:10px;text-align:center">Sending image to Gemini...</div>';
+
+    try {
+      const aiResponse = await sendImageToGemini(dataUrl);
+      outputElement.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+        <div>Analysis Result</div>
+        <button style="background:transparent;border:none;color:#aaa;cursor:pointer;font-size:18px">×</button>
+      </div>
+      <div style="background:#252525;padding:12px;border-radius:6px;white-space:pre-wrap;font-size:13px">
+        ${aiResponse}
+      </div>
+      <button style="margin-top:12px;padding:8px;width:100%;background:#404040;border:none;border-radius:4px;color:white;cursor:pointer">
+        Copy Text
+      </button>
+    `;
+      outputElement.querySelector("button").addEventListener("click", () => {
+        navigator.clipboard.writeText(aiResponse);
+      });
+      outputElement
+        .querySelector('button[style*="background:transparent"]')
+        .addEventListener("click", () => {
+          outputElement.style.display = "none";
+        });
+    } catch (error) {
+      outputElement.innerHTML = `<div style="color:#ff6b6b;padding:10px">Error: ${error.message}</div>`;
+    }
+  }
+
+  async function sendImageToGemini(dataUrl) {
+    return new Promise((resolve, reject) => {
+      chrome.runtime.sendMessage(
+        { action: "callGeminiWithImage", image: dataUrl },
+        (response) => {
+          if (chrome.runtime.lastError) {
+            return reject(new Error(chrome.runtime.lastError.message));
+          }
+          if (response.success) {
+            resolve(response.data);
+          } else {
+            reject(new Error(response.error || "An unknown error occurred."));
+          }
+        }
+      );
     });
   }
 

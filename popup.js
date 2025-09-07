@@ -1,9 +1,10 @@
 function saveCredentials() {
   const endpoint = document.getElementById("apiEndpoint").value.trim();
   const key = document.getElementById("apiKey").value.trim();
+  const sendImage = document.getElementById("sendImageToGemini").checked;
   const statusDiv = document.getElementById("status");
 
-  chrome.storage.sync.set({ endpoint, key }, () => {
+  chrome.storage.sync.set({ endpoint, key, sendImage }, () => {
     statusDiv.textContent = "Credentials saved!";
     setTimeout(() => {
       statusDiv.textContent = "";
@@ -32,9 +33,11 @@ document.getElementById("saveBtn").addEventListener("click", saveCredentials);
 document.getElementById("captureBtn").addEventListener("click", triggerCapture);
 
 document.addEventListener("DOMContentLoaded", () => {
-  chrome.storage.sync.get(["endpoint", "key"], (result) => {
+  chrome.storage.sync.get(["endpoint", "key", "sendImage"], (result) => {
     if (result.endpoint)
       document.getElementById("apiEndpoint").value = result.endpoint;
     if (result.key) document.getElementById("apiKey").value = result.key;
+    if (typeof result.sendImage !== "undefined")
+      document.getElementById("sendImageToGemini").checked = result.sendImage;
   });
 });
